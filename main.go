@@ -11,18 +11,13 @@ type Coord struct {
 	coluna int
 }
 
-func verifica_linha(input []string, grid [][]string, linha int, coluna int, dir int) bool {
+func verifica(input []string, grid [][]string, linha int, coluna int, dir_linha int, dir_coluna int) bool {
 	for i, input_letter := range input {
-		if coluna+i*dir < 0 || coluna+i*dir > 14 || input_letter != grid[linha][coluna+i*dir] {
-			return false
-		}
-	}
-	return true
-}
-
-func verifica_coluna(input []string, grid [][]string, linha int, coluna int, dir int) bool {
-	for i, input_letter := range input {
-		if linha+i*dir < 0 || linha+i*dir > 14 || input_letter != grid[linha+i*dir][coluna] {
+		if coluna+i*dir_coluna < 0 ||
+			coluna+i*dir_coluna > 14 ||
+			linha+i*dir_linha < 0 ||
+			linha+i*dir_linha > 14 ||
+			input_letter != grid[linha+i*dir_linha][coluna+i*dir_coluna] {
 			return false
 		}
 	}
@@ -96,15 +91,45 @@ func main() {
 	for i, row := range grid {
 		for j, grid_element := range row {
 			if grid_element == input[0] {
-				if verifica_linha(input, grid, i, j, 1) {
+				if verifica(input, grid, i, j, 0, 1) {
 					//	println("Encontrado em ", i, j)
 					solucoes = append(solucoes, Coord{i, j})
 					revela(answer_grid, input, i, j, 0, 1)
 				}
-				if verifica_linha(input, grid, i, j, -1) {
+				if verifica(input, grid, i, j, 0, -1) {
 					//	println("Encontrado em ", i, j)
 					solucoes = append(solucoes, Coord{i, j})
 					revela(answer_grid, input, i, j, 0, -1)
+				}
+				if verifica(input, grid, i, j, 1, 0) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, 1, 0)
+				}
+				if verifica(input, grid, i, j, -1, 0) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, -1, 0)
+				}
+				if verifica(input, grid, i, j, 1, 1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, 1, 1)
+				}
+				if verifica(input, grid, i, j, -1, 1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, -1, 1)
+				}
+				if verifica(input, grid, i, j, -1, -1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, -1, -1)
+				}
+				if verifica(input, grid, i, j, 1, -1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, 1, -1)
 				}
 
 			}
