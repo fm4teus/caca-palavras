@@ -6,6 +6,44 @@ import (
 	"os"
 )
 
+type Coord struct {
+	linha  int
+	coluna int
+}
+
+func verifica_linha(input []string, grid [][]string, linha int, coluna int, dir int) bool {
+	for i, input_letter := range input {
+		if coluna+i*dir < 0 || coluna+i*dir > 14 || input_letter != grid[linha][coluna+i*dir] {
+			return false
+		}
+	}
+	return true
+}
+
+func verifica_coluna(input []string, grid [][]string, linha int, coluna int, dir int) bool {
+	for i, input_letter := range input {
+		if linha+i*dir < 0 || linha+i*dir > 14 || input_letter != grid[linha+i*dir][coluna] {
+			return false
+		}
+	}
+	return true
+}
+
+func print_grid(grid [][]string) {
+	for _, row := range grid {
+		for _, grid_element := range row {
+			fmt.Printf("%s ", grid_element)
+		}
+		fmt.Print("\n")
+	}
+}
+
+func revela(answer_grid [][]string, word []string, i int, j int, dir_linha int, dir_coluna int) {
+	for contador, letter := range word {
+		answer_grid[i+contador*dir_linha][j+contador*dir_coluna] = letter
+	}
+}
+
 func main() {
 
 	var grid = [][]string{
@@ -26,12 +64,7 @@ func main() {
 		{"F", "S", "I", "K", "U", "F", "P", "E", "Q", "T", "A", "M", "L", "O", "J"},
 	}
 
-	for _, row := range grid {
-		for _, grid_element := range row {
-			fmt.Printf("%s ", grid_element)
-		}
-		fmt.Print("\n")
-	}
+	print_grid(grid)
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter text: ")
@@ -46,5 +79,42 @@ func main() {
 		}
 	}
 
+	var answer_grid = [][]string{}
+	for i := 0; i < 15; i++ {
+		answer_grid = append(answer_grid, []string{})
+		for j := 0; j < 15; j++ {
+			answer_grid[i] = append(answer_grid[i], "*")
+		}
+	}
+
+	print_grid(answer_grid)
+
 	fmt.Println(input)
+
+	solucoes := []Coord{}
+
+	for i, row := range grid {
+		for j, grid_element := range row {
+			if grid_element == input[0] {
+				if verifica_linha(input, grid, i, j, 1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, 0, 1)
+				}
+				if verifica_linha(input, grid, i, j, -1) {
+					//	println("Encontrado em ", i, j)
+					solucoes = append(solucoes, Coord{i, j})
+					revela(answer_grid, input, i, j, 0, -1)
+				}
+
+			}
+		}
+	}
+
+	print_grid(answer_grid)
+
+	for _, solucao := range solucoes {
+		fmt.Println("Encontrado: ", solucao)
+	}
+
 }
