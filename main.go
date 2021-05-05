@@ -39,6 +39,16 @@ func revela(answer_grid [][]string, word []string, i int, j int, dir_linha int, 
 	}
 }
 
+func inicializa_answer_grid(answer_grid [][]string) [][]string {
+	for i := 0; i < 15; i++ {
+		answer_grid = append(answer_grid, []string{})
+		for j := 0; j < 15; j++ {
+			answer_grid[i] = append(answer_grid[i], "*")
+		}
+	}
+	return answer_grid
+}
+
 func main() {
 
 	var grid = [][]string{
@@ -62,84 +72,42 @@ func main() {
 	print_grid(grid)
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter text: ")
-	raw_input, _ := reader.ReadString('\n')
 
-	var input []string
-
-	for _, letter := range raw_input {
-		if string(letter) != "\n" {
-			input = append(input, string(letter))
-			fmt.Println("* ", string(letter))
-		}
-	}
-
-	var answer_grid = [][]string{}
-	for i := 0; i < 15; i++ {
-		answer_grid = append(answer_grid, []string{})
-		for j := 0; j < 15; j++ {
-			answer_grid[i] = append(answer_grid[i], "*")
-		}
-	}
-
-	print_grid(answer_grid)
-
-	fmt.Println(input)
-
-	solucoes := []Coord{}
-
-	for i, row := range grid {
-		for j, grid_element := range row {
-			if grid_element == input[0] {
-				if verifica(input, grid, i, j, 0, 1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, 0, 1)
-				}
-				if verifica(input, grid, i, j, 0, -1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, 0, -1)
-				}
-				if verifica(input, grid, i, j, 1, 0) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, 1, 0)
-				}
-				if verifica(input, grid, i, j, -1, 0) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, -1, 0)
-				}
-				if verifica(input, grid, i, j, 1, 1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, 1, 1)
-				}
-				if verifica(input, grid, i, j, -1, 1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, -1, 1)
-				}
-				if verifica(input, grid, i, j, -1, -1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, -1, -1)
-				}
-				if verifica(input, grid, i, j, 1, -1) {
-					//	println("Encontrado em ", i, j)
-					solucoes = append(solucoes, Coord{i, j})
-					revela(answer_grid, input, i, j, 1, -1)
-				}
-
+	for {
+		var input []string
+		fmt.Print("Enter text: ")
+		raw_input, _ := reader.ReadString('\n')
+		for _, letter := range raw_input {
+			if string(letter) != "\n" {
+				input = append(input, string(letter))
 			}
 		}
-	}
 
-	print_grid(answer_grid)
+		var answer_grid = [][]string{}
+		answer_grid = inicializa_answer_grid(answer_grid)
 
-	for _, solucao := range solucoes {
-		fmt.Println("Encontrado: ", solucao)
+		solucoes := []Coord{}
+
+		for i, row := range grid {
+			for j, grid_element := range row {
+				if grid_element == input[0] {
+					for dir_linha := -1; dir_linha < 2; dir_linha++ {
+						for dir_coluna := -1; dir_coluna < 2; dir_coluna++ {
+							if verifica(input, grid, i, j, dir_linha, dir_coluna) {
+								solucoes = append(solucoes, Coord{i, j})
+								revela(answer_grid, input, i, j, dir_linha, dir_coluna)
+							}
+						}
+					}
+				}
+			}
+		}
+
+		print_grid(answer_grid)
+
+		for _, solucao := range solucoes {
+			fmt.Println("Encontrado: ", solucao)
+		}
 	}
 
 }
